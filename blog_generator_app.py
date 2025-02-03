@@ -2,9 +2,24 @@ import streamlit as st
 from langchain.prompts import PromptTemplate
 from langchain.llms import CTransformers
 
-# The below method will be used to get the response from the LLama 2 model
+'''
+    - Streamlit is used for creating web apps with minimal effort.
+    - PromptTemplate helps structure input prompts for LLMs.
+    - CTransformers is used to load and interact with transformer models locally.
+'''
+
+# The below method will be used to get the response from the LLama 2 model based on user input.
 def getResponseFromLlama(input_text, number_words, blog_audience):
-    # using Llama 2 model below (I assume you have installed this model in your local)
+    # Using Llama 2 model below (Assuming you have installed this model locally)
+
+    '''
+        CTransformers is a library that loads transformer models efficiently for inference.
+    - 'model' specifies the path to the model file.
+    - 'model_type' defines the type of model being used (e.g., 'llama').
+    - 'config' contains additional parameters such as:
+      - 'max_new_tokens': Limits the number of new tokens generated.
+      - 'temperature': Controls randomness (lower values make output more deterministic).
+    '''
     llm = CTransformers(model = 'models\llama-2-7b-chat.ggmlv3.q2_K.bin',
                         model_type = 'llama',
                         config = {'max_new_tokens':256,
@@ -15,6 +30,7 @@ def getResponseFromLlama(input_text, number_words, blog_audience):
                         Write a blog for {blog_audience} on the topic {input_text} within {number_words}.
                         Start the blog by 'Hey, welcome! How are you doing?'
                     """
+    # PromptTemplate helps structure the input dynamically based on variables.
     prompt = PromptTemplate(input_variables=["blog_audience", "input_text", "number_words"],
                             template = prompt_template)
     
@@ -41,7 +57,7 @@ with column2:
     blog_audience = st.selectbox('Write this blog for', 
                                  ('General public', 'Data Scientists', 'Software Engineers'), 
                                  index = 0)
-submit = st.button('Generate')
+submit = st.button('Generate Blog')
 
 if submit:
     st.write(getResponseFromLlama(input_text, number_words, blog_audience))
